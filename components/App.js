@@ -3,29 +3,26 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import FileView from './FileView';
-import Toolbar from './Toolbar';
 
 import fileStore from '../stores/fileStore';
 import actions from '../actions';
 
 export default class App extends React.Component {
-  constructor(props) {
+  constructor(props){
     super(props);
-      this.state = {
-        files:fileStore.getState(),
-        selectedFileIndex: 0
-      };
-      
+    this.state = {
+      files:fileStore.getState(),
+      selectedFileIndex: 0
+    };
+
     this.handleChange = this.handleChange.bind(this);
-    this.handleSet = this.handleSet.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
-  
-  
   componentDidMount() {
     this.removeListener = fileStore.addListener((files) => {
-      this.setState({ files });
+        this.setState({ files });
     });
   }
   componentWillUnmount() {
@@ -33,18 +30,20 @@ export default class App extends React.Component {
   }
   handleChange(ev) {
     const { selectedFileIndex } = this.state;
-    // TODO Dispatch action
+    actions.updateFile(selectedFileIndex,ev.target.value);
   }
   handleSelect(selectedFileIndex) {
     // TODO Update selectedFileIndex state
+    this.setState({selectedFileIndex:selectedFileIndex});
   }
   handleAdd(ev) {
     ev.preventDefault();
-    // TODO Dispatch action
+    actions.addFile();
   }
   handleRemove(ev) {
     ev.preventDefault()
-    // TODO Dispatch action
+    actions.removeFile(this.state.selectedFileIndex);
+    this.setState({selectedFileIndex:0});
   }
   render() {
     const { files, selectedFileIndex } = this.state;
